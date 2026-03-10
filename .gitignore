@@ -1,0 +1,9 @@
+venv/
+models/
+__pycache__/
+*.pyc
+.DS_Store
+results/raw/
+results/perplexity/
+*.egg-info/
+PRUNING_EXPERIMENT_PLAN.md

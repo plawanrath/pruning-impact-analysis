@@ -1,0 +1,44 @@
+models:
+  - name: "gemma-2-9b-it"
+    hf_path: "google/gemma-2-9b-it"
+  - name: "mistral-7b-instruct-v0.3"
+    hf_path: "mistralai/Mistral-7B-Instruct-v0.3"
+  - name: "phi-3.5-mini-instruct"
+    hf_path: "microsoft/Phi-3.5-mini-instruct"
+
+pruning:
+  methods: ["random", "magnitude", "wanda"]
+  sparsity_levels: [0, 10, 30, 50, 70]
+  calibration_samples: 128
+  calibration_dataset: "allenai/c4"
+  calibration_subset: "en"
+  calibration_seed: 0
+  models_dir: "./models"
+
+dataset:
+  name: "Elfsong/BBQ"
+  bias_categories: ["age", "gender_identity", "race_ethnicity", "religion", "ses"]
+  condition: "ambig"
+  output_path: "./data/processed/bbq_ambiguous.jsonl"
+
+inference:
+  temperature: 0.3
+  max_tokens: 5
+  num_seeds: 5
+  seeds: [42, 123, 456, 789, 1024]
+
+baseline_filter:
+  min_srs: 0.20
+  max_srs: 1.01
+
+perplexity:
+  num_samples: 256
+  sequence_length: 512
+  batch_size: 8
+  data_path: "allenai/tulu-3-sft-mixture"
+  seed: 123
+
+output:
+  raw_results_dir: "./results/raw"
+  aggregated_dir: "./results/aggregated"
+  figures_dir: "./results/figures"
