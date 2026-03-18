@@ -44,6 +44,7 @@ def prune(model, tokenizer, sparsity_ratio: float, calibration_data: list):
         # Mask: keep positions with rank >= n_prune (higher rank = more important)
         mask = (ranks >= n_prune).astype(W.dtype)
         module.weight = W * mask
+        mx.eval(module.weight)
 
     mx.eval(model.parameters())
     return model
@@ -75,7 +76,8 @@ def _collect_activation_norms(model, calibration_data):
                 else:
                     activation_norms[name] = norm_vec
 
-        mx.eval(hidden_states)
+        # Eval all accumulated norms to prevent graph explosion
+        mx.eval(hidden_states, *activation_norms.values())
 
     return activation_norms
 
@@ -174,5 +176,5 @@ def _accumulate_norm(norms, prefix, submodule, input_tensor):
 def _create_causal_mask(x):
     """Create a causal attention mask for the given input tensor."""
     seq_len = x.shape[1]
-    mask = mx.triu(mx.full((seq_len, seq_len), float("-inf")), k=1)
+    mask = mx.triu(mx.full((seq_len, seq_len), float("-inf"), dtype=x.dtype), k=1)
     return mask

@@ -72,9 +72,9 @@ def prepare_dataset(config_path="config.yaml"):
                 if context_condition != ds_cfg["condition"]:
                     continue
 
-                # Filter to target bias categories
+                # Filter to target bias categories (case-insensitive)
                 category = example.get("category", "")
-                if category not in ds_cfg["bias_categories"]:
+                if category.lower() not in [c.lower() for c in ds_cfg["bias_categories"]]:
                     continue
 
                 answer_info = _extract_answer_info(example)

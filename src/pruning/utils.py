@@ -4,6 +4,7 @@ import json
 
 import mlx.core as mx
 import mlx.nn as nn
+import mlx.utils
 
 
 def is_prunable_linear(name: str, module) -> bool:
@@ -70,22 +71,7 @@ def get_calibration_data(dataset_name, subset, num_samples, seed, tokenizer, seq
 
 def save_pruned_model(model, tokenizer, output_dir):
     """Save pruned model weights and tokenizer to output directory."""
-    os.makedirs(output_dir, exist_ok=True)
-
-    # Collect all weights as a flat dict
-    weights = {}
-    for name, param in model.named_parameters():
-        weights[name] = param
-
-    # Save in sharded safetensors (mlx convention)
-    from mlx.utils import save_safetensors
-    save_safetensors(os.path.join(output_dir, "model.safetensors"), weights)
-
-    # Copy config.json from model if available
-    if hasattr(model, "config"):
-        cfg = model.config if isinstance(model.config, dict) else model.config.__dict__
-        with open(os.path.join(output_dir, "config.json"), "w") as f:
-            json.dump(cfg, f, indent=2)
-
+    from mlx_lm.utils import save_model
+    save_model(output_dir, model)
     tokenizer.save_pretrained(output_dir)
     print(f"  Saved pruned model to {output_dir}")
