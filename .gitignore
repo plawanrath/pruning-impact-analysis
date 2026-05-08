@@ -8,3 +8,6 @@ data/
 results/
 *.egg-info/
 PRUNING_EXPERIMENT_PLAN.md
+paper.tex
+PruningErodesSafetyAlignmentBias AmplificationinWeight-PrunedLLMsforEdge Deployment.pdf
+PruningErodesSafetyAlignmentBias AmplificationinWeight-PrunedLLMsforEdge DeploymentV0.pdf
